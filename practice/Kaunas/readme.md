@@ -7,7 +7,7 @@ Help business to classify bad customers
 -   R kernel
 -   R packages:
 
-```
+```         
 
     install.packages("h2o")
     install.packages("shiny")
@@ -16,7 +16,7 @@ Help business to classify bad customers
 
 # Directory structure
 
-```
+```         
     ├───1-data
     ├───2-report
     ├───3-R
@@ -25,19 +25,17 @@ Help business to classify bad customers
     └───app
 ```
 
-
 # How to execute code
 
 -   Download data from ...
 -   Run data preparation script:
 
-```
-        git clone https://github.com/kibiras/KTU-DVDA-PROJECT.git
+```         
+        git clone https://github.com/kestutisd/KTU-DVDA-PROJECT.git
         cd KTU-DVDA-PROJECT/3-R
         RScript data_transformation.R
 ```
 
 # Results
 
-
-* Random Forest proved to be the best model and reached AUC = 0.78 on training dataset
+-   Random Forest proved to be the best model and reached AUC = 0.78 on training dataset

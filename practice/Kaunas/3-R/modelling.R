@@ -29,7 +29,7 @@ aml@leaderboard
 model <- aml@leader
 
 
-model <- h2o.getModel("GBM_1_AutoML_2_20231027_195712")
+model <- h2o.getModel("XGBoost_1_AutoML_3_20231117_175636")
 
 h2o.performance(model, train = TRUE)
 h2o.performance(model, valid = TRUE)
@@ -92,7 +92,6 @@ h2o.auc(h2o.performance(gbm_model, newdata = test))
 
 # deep learning
 
-
 dl_model <- h2o.deeplearning(
   model_id="dl_model",
   activation =  "Tanh",
@@ -141,3 +140,34 @@ dl_grid <- h2o.grid(algorithm = "deeplearning",
 h2o.getGrid(dl_grid@grid_id, sort_by = "auc")
 
 best_grid <- h2o.getModel(dl_grid@model_ids[[3]])
+
+# 2023.11.17
+
+# Explain 
+
+h2o.explain_row(model, test, row_index = 1)
+
+# Imputation
+summary(df)
+h2o.impute(df, "max_open_credit", method = "median")
+summary(df)
+h2o.impute(df, "yearly_income", method = "mean", by = c("home_ownership"))
+summary(df)
+
+# Deep features
+
+deepfeatures_layer2 = h2o.deepfeatures(dl_model, df, layer = 2)
+head(deepfeatures_layer2)
+
+combined_features <- h2o.cbind(deepfeatures_layer2, df$y)
+combined_features$y <- as.factor(combined_features$y)
+
+rf_model_deepfeatures <- h2o.randomForest(names(deepfeatures_layer2),
+                                          y,
+                                          combined_features)
+h2o.auc(rf_model_deepfeatures)
+
+deepfeatures_layer2_test = h2o.deepfeatures(dl_model, test_data, layer = 2)
+
+predictions_rf_deepfeatures <- h2o.predict(rf_model_deepfeatures, deepfeatures_layer2_test) %>%
+  as_tibble()
