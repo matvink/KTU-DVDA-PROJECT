@@ -156,21 +156,4 @@ summary(df)
 h2o.impute(df, "yearly_income", method = "mean", by = c("home_ownership"))
 summary(df)
 
-# Deep features - maybe
-
-deepfeatures_layer2 = h2o.deepfeatures(dl_model, df, layer = 2)
-head(deepfeatures_layer2)
-
-combined_features <- h2o.cbind(deepfeatures_layer2, df$y)
-combined_features$y <- as.factor(combined_features$y)
-
-rf_model_deepfeatures <- h2o.randomForest(names(deepfeatures_layer2),
-                                          y,
-                                          combined_features)
-h2o.auc(rf_model_deepfeatures)
-
-deepfeatures_layer2_test = h2o.deepfeatures(dl_model, test_data, layer = 2)
-
-predictions_rf_deepfeatures <- h2o.predict(rf_model_deepfeatures, deepfeatures_layer2_test) %>%
-  as_tibble()
-
+h2o.shutdown(F)
