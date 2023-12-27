@@ -10,6 +10,10 @@
 -   git, GitHub
 -   h2o mašininio mokymosi platforma <https://www.h2o.ai/>
 
+### Duomenys
+
+(<https://drive.google.com/drive/folders/17NsP84MecXHyctM94NLwps_tsowld_y8?usp=sharing>)
+
 ### Rezultatas
 
 |               |                |
