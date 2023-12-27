@@ -12,11 +12,10 @@
 
 ### Duomenys
 
-(<https://drive.google.com/drive/folders/17NsP84MecXHyctM94NLwps_tsowld_y8?usp=sharing>)
+<https://drive.google.com/drive/folders/17NsP84MecXHyctM94NLwps_tsowld_y8?usp=sharing>
 
 ### Rezultatas
 
-|               |                |
 |---------------|----------------|
 | **Modelis**   | **Rezultatas** |
 | GBM\_\_AutoML | 0.819          |
