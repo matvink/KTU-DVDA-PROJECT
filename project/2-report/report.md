@@ -1,39 +1,46 @@
 ---
-title: "test"
-author: "test"
-date: "10/3/2021"
-output:
-  html_document:
-    keep_md: true
+Pavadinimas: "Analitinė banko paskolos įvertinimo aplikacija"
+Studentai: "Matas ir Ieva DVDA-3V"
+Data: "27/12/2023"
 ---
 
+Užkrauname reikalingas bibliotekas
 
-
-## R Markdown
-
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
-
-```r
-summary(cars)
+``` r
+library(h2o)
+library(tidyverse)
 ```
 
-```
-##      speed           dist       
-##  Min.   : 4.0   Min.   :  2.00  
-##  1st Qu.:12.0   1st Qu.: 26.00  
-##  Median :15.0   Median : 36.00  
-##  Mean   :15.4   Mean   : 42.98  
-##  3rd Qu.:19.0   3rd Qu.: 56.00  
-##  Max.   :25.0   Max.   :120.00
+Nuskaitome duomenis.
+
+``` r
+df <- h2o.importFile("1-data/train_data.csv")
+test_data <- h2o.importFile("1-data/test_data.csv")
 ```
 
-## Including Plots
+Duomenų failo dimensijos:
 
-You can also embed plots, for example:
+``` r
+dim(df)
+```
 
-![](report_files/figure-html/pressure-1.png)<!-- -->
+```         
+## [1] 1000000      17
+```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+# Kintamųjų apžvalga
+
+``` r
+summary(df[7:13]) %>%
+  kable()
+```
+
+|     | yearly_income    | home_ownership   | bankruptcies   | years_current_job | monthly_debt   | years_credit_history | months_since_last_delinquent |
+|:----|:-----------------|:-----------------|:---------------|:------------------|:---------------|:---------------------|:-----------------------------|
+|     | Min. : 76627     | Length:1000000   | Min. :0.0000   | Min. : 0.00       | Min. : 0       | Min. : 4.0           | Min. : 0.0                   |
+|     | 1st Qu.: 825797  | Class :character | 1st Qu.:0.0000 | 1st Qu.: 3.00     | 1st Qu.: 10324 | 1st Qu.:13.0         | 1st Qu.: 16.0                |
+|     | Median : 1148550 | Mode :character  | Median :0.0000 | Median : 6.00     | Median : 16319 | Median :17.0         | Median : 32.0                |
+|     | Mean : 1344805   | NA               | Mean :0.1192   | Mean : 5.88       | Mean : 18550   | Mean :18.1           | Mean : 34.9                  |
+|     | 3rd Qu.: 1605899 | NA               | 3rd Qu.:0.0000 | 3rd Qu.:10.00     | 3rd Qu.: 24059 | 3rd Qu.:22.0         | 3rd Qu.: 51.0                |
+|     | Max. :165557393  | NA               | Max. :7.0000   | Max. :10.00       | Max. :435843   | Max. :70.0           | Max. :176.0                  |
+|     | NA's :219439     | NA               | NA's :1805     | NA's :45949       | NA             | NA                   | NA's :529539                 |
