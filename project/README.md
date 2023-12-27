@@ -9,3 +9,10 @@
 -   R (shiny, tidyverse, rmarkdown)
 -   git, GitHub
 -   h2o mašininio mokymosi platforma <https://www.h2o.ai/>
+
+### Rezultatas
+
+|               |                |
+|---------------|----------------|
+| **Modelis**   | **Rezultatas** |
+| GBM\_\_AutoML | 0.819          |
