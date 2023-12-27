@@ -2,6 +2,7 @@ library(h2o)
 library(tidyverse)
 h2o.init(max_mem_size = "8g")
 
+
 df <- h2o.importFile("1-data/train_data.csv")
 test_data <- h2o.importFile("1-data/test_data.csv")
 df

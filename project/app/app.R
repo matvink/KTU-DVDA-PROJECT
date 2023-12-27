@@ -1,3 +1,5 @@
+Sys.setenv(JAVA_HOME="C:/Program Files/Java/jdk-17")
+
 library(shinydashboard)
 library(shiny)
 library(shinyBS)
@@ -28,13 +30,11 @@ ui <- dashboardPage(
                 valueBoxOutput("loansStatusTBox"),
                 valueBoxOutput("loansStatusFBox")
               ),
-              
       ),
       tabItem("data",
               tabPanel("Bar",
                        dataTableOutput("dataTable")
               )
-              
       ),
       tabItem("charts",
               fluidRow(
@@ -55,46 +55,38 @@ ui <- dashboardPage(
                 ),
               )
       ),
-      
       tabItem("predictions",
               dataTableOutput("predictions")
       ),
-      
       tabItem("about",
               h1(tags$b("DVDA projektas")),
+              
       )
     )
   )
 )
 server <- function(input, output) {
   h2o.init()
-  model <- h2o.getModel("GBM_1_AutoML_2_20231216_83909")
-  
+  model <- h2o.loadModel("GBM_1_AutoML_2_20231216_83909")
   output$table <- renderTable({
     req(input$file)
     table <- read_csv(input$file$datapath)
-    
     tableCount <<- table %>% tally()
     tableData <<- table
-    
     table
   })
-  
   output$predictions <- renderDataTable({
     req(input$file)
     df_test <- h2o.importFile(input$file$datapath)
     p <- h2o.predict(model, df_test)
-    
     loanStatusFCount <<- as.data.frame(p) %>% tally(predict == 0)
     loanStatusTCount <<- as.data.frame(p) %>% tally(predict == 1)
-    
     p %>%
       as_tibble() %>%
       mutate(y = predict) %>%
       select(y) %>%
       rownames_to_column("id")
   })
-  
   output$dataTable <- renderDataTable({
     req(input$file)
     #tableData
@@ -105,7 +97,6 @@ server <- function(input, output) {
       )        
     )
   })
-  
   output$loansBox <- renderValueBox({
     req(input$file)
     valueBox(
@@ -114,7 +105,6 @@ server <- function(input, output) {
       color = "yellow"
     )
   })
-  
   output$loansStatusTBox <- renderValueBox({
     req(input$file)
     valueBox(
@@ -122,7 +112,6 @@ server <- function(input, output) {
       color = "green"
     )
   })
-  
   output$loansStatusFBox <- renderValueBox({
     req(input$file)
     valueBox(
@@ -132,18 +121,15 @@ server <- function(input, output) {
       color = "red"
     )
   })
-  
   output$termPlot <- renderPlot({
     req(input$file)
     ggplot(tableData, aes(x=as.factor(term), fill=as.factor(term) )) + 
       geom_bar(stat='count', fill="steelblue") +
-      
       xlab('Paskolos trukmė')+
       ylab('Dažnis')+
       coord_flip()+
       theme_minimal()
   })
-  
   output$creditScorePlot <- renderPlot({
     req(input$file)
     ggplot(tableData, aes(x=as.factor(credit_score), fill=as.factor(credit_score) )) + 
@@ -154,7 +140,6 @@ server <- function(input, output) {
       coord_flip()+
       theme_minimal()
   })
-  
   output$loanAmountPlot <- renderPlot({
     req(input$file)
     ggplot(tableData, aes(x=years_credit_history)) + 
@@ -163,6 +148,5 @@ server <- function(input, output) {
       geom_histogram(fill="steelblue") +
       theme_minimal()
   })
-  
 }
 shinyApp(ui, server)
