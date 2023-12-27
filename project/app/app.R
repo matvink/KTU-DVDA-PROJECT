@@ -69,8 +69,8 @@ ui <- dashboardPage(
 )
 server <- function(input, output) {
   
-
-  model <- h2o.loadModel("../..-model/rf_model")
+  path=getwd()
+  model <- h2o.loadModel("../../app/rf_model")
   output$table <- renderTable({
     req(input$file)
     table <- read_csv(input$file$datapath)
@@ -105,14 +105,14 @@ server <- function(input, output) {
     valueBox(
       tableCount,
       "Paskolos prašymai", icon = icon("piggy-bank", lib = "glyphicon"),
-      color = "yellow"
+      color = "blue"
     )
   })
   output$loansStatusTBox <- renderValueBox({
     req(input$file)
     valueBox(
       loanStatusTCount , "Patvirtinti", icon = icon("ok", lib = "glyphicon"),
-      color = "green"
+      color = "red"
     )
   })
   output$loansStatusFBox <- renderValueBox({
@@ -121,7 +121,7 @@ server <- function(input, output) {
       loanStatusFCount,
       "Atmesti",
       icon = icon("remove", lib = "glyphicon"),
-      color = "red"
+      color = "yellow"
     )
   })
   output$termPlot <- renderPlot({
