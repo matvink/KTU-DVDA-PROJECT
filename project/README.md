@@ -16,6 +16,7 @@
 
 ### Rezultatas
 
+|               |                |
 |---------------|----------------|
 | **Modelis**   | **Rezultatas** |
 | GBM\_\_AutoML | 0.819          |
