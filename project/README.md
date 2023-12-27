@@ -1,10 +1,10 @@
-# Duomenų Produktas - Analitinė Banko Paskolos Įvertinimo Aplikacija
+# Analitinė banko paskolos įvertinimo aplikacija
 
 ## Projekto Aprašymas
 
-Ši aplikacija yra skirta banko paskolos įvertinimui naudojant mašininio mokymosi algoritmus. Projekto tikslas - sukurti duomenų tyrybos modelį, kuris būtų gebėjęs tiksliai įvertinti, ar klientui galima suteikti paskolą.
+Ši aplikacija yra skirta banko paskolos įvertinimui naudojant mašininio mokymosi algoritmus. Projekto tikslas - sukurti duomenų tyrybos modelį, kuris gebėtų tiksliai įvertinti, ar klientui galima suteikti paskolą.
 
-## Projekto Gebėjimai
+## Projekto gebėjimai:
 
 1. **Duomenų Analizė ir Interpretavimas**
    - Mokslinė literatūra turi būti tinkama projekto temai.
@@ -23,7 +23,7 @@
 5. **Projekto Vertinimo Kriterijai**
    - Laikytis vertinimo kriterijų, įvertinant mokslinės literatūros tinkamumą, metodų parinkimą, modelių tikslumą ir kitus aspektus.
 
-## Reikalingi Įrankiai
+## Naudoti įrankiai
 
 - R (shiny, tidyverse, rmarkdown)
 - git, GitHub
