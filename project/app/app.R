@@ -10,6 +10,8 @@ library(highcharter)
 library(plotly)
 library(DT)
 
+h2o.init(max_mem_size = "8g")
+
 ui <- dashboardPage(
   dashboardHeader(title = "Banko paskolos aplikacija 2023"),
   dashboardSidebar(fileInput("file", "Įkelti csv failą"),
@@ -66,8 +68,9 @@ ui <- dashboardPage(
   )
 )
 server <- function(input, output) {
-  h2o.init()
-  model <- h2o.loadModel("GBM_1_AutoML_2_20231216_83909")
+  
+
+  model <- h2o.loadModel("../..-model/rf_model")
   output$table <- renderTable({
     req(input$file)
     table <- read_csv(input$file$datapath)
