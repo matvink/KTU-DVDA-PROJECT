@@ -111,7 +111,7 @@ df_ %>%
   theme_dark()
 ```
 
-<img src="Grafikas_2.png" width="500"/>
+<img src="/Grafikas_2.png" width="500"/>
 
 ```{r, eval=FALSE}
 df_ %>%
