@@ -2,6 +2,9 @@
 Pavadinimas: "Exploratory Analysis"
 Studentai: "Matas ir Ieva DVDA-3V"
 Data: "27/12/2023"
+output:
+  html_document:
+    keep_md: true
 ---
 
 Užkrauname reikalingas bibliotekas
