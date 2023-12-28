@@ -1,5 +1,5 @@
 ---
-Pavadinimas: "Analitinė banko paskolos įvertinimo aplikacija"
+Pavadinimas: "Exploratory Analysis"
 Studentai: "Matas ir Ieva DVDA-3V"
 Data: "27/12/2023"
 ---
@@ -36,7 +36,7 @@ summary(df[7:13]) %>%
 ```
 
 |     | yearly_income    | home_ownership   | bankruptcies   | years_current_job | monthly_debt   | years_credit_history | months_since_last_delinquent |
-|:----|:-----------------|:-----------------|:---------------|:------------------|:---------------|:---------------------|:-----------------------------|
+|:--------|:--------|:--------|:--------|:--------|:--------|:--------|:--------|
 |     | Min. : 76627     | Length:1000000   | Min. :0.0000   | Min. : 0.00       | Min. : 0       | Min. : 4.0           | Min. : 0.0                   |
 |     | 1st Qu.: 825797  | Class :character | 1st Qu.:0.0000 | 1st Qu.: 3.00     | 1st Qu.: 10324 | 1st Qu.:13.0         | 1st Qu.: 16.0                |
 |     | Median : 1148550 | Mode :character  | Median :0.0000 | Median : 6.00     | Median : 16319 | Median :17.0         | Median : 32.0                |
