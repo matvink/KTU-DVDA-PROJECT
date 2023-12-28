@@ -77,7 +77,7 @@ summary(df[7:13]) %>%
 ```
 
 |     | yearly_income    | home_ownership   | bankruptcies   | years_current_job | monthly_debt   | years_credit_history | months_since_last_delinquent |
-|:----|:-----------------|:-----------------|:---------------|:------------------|:---------------|:---------------------|:-----------------------------|
+|:--------|:--------|:--------|:--------|:--------|:--------|:--------|:--------|
 |     | Min. : 76627     | Length:1000000   | Min. :0.0000   | Min. : 0.00       | Min. : 0       | Min. : 4.0           | Min. : 0.0                   |
 |     | 1st Qu.: 848844  | Class :character | 1st Qu.:0.0000 | 1st Qu.: 3.00     | 1st Qu.: 10200 | 1st Qu.:14.0         | 1st Qu.: 16.0                |
 |     | Median : 1174371 | Mode :character  | Median :0.0000 | Median : 6.00     | Median : 16221 | Median :17.0         | Median : 32.0                |
@@ -111,7 +111,7 @@ df_ %>%
   theme_dark()
 ```
 
-<img src="C:/Users/MatasV/OneDrive - SOCMIN/Darbalaukis/KTU/Projektas/KTU-DVDA-PROJECT/Grafikas_2.png" width="500"/>
+<img src="Grafikas_2.png" width="500"/>
 
 ```{r, eval=FALSE}
 df_ %>%
