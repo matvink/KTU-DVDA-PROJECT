@@ -77,7 +77,7 @@ summary(df[7:13]) %>%
 ```
 
 |     | yearly_income    | home_ownership   | bankruptcies   | years_current_job | monthly_debt   | years_credit_history | months_since_last_delinquent |
-|:--------|:--------|:--------|:--------|:--------|:--------|:--------|:--------|
+|:----|:-----------------|:-----------------|:---------------|:------------------|:---------------|:---------------------|:-----------------------------|
 |     | Min. : 76627     | Length:1000000   | Min. :0.0000   | Min. : 0.00       | Min. : 0       | Min. : 4.0           | Min. : 0.0                   |
 |     | 1st Qu.: 848844  | Class :character | 1st Qu.:0.0000 | 1st Qu.: 3.00     | 1st Qu.: 10200 | 1st Qu.:14.0         | 1st Qu.: 16.0                |
 |     | Median : 1174371 | Mode :character  | Median :0.0000 | Median : 6.00     | Median : 16221 | Median :17.0         | Median : 32.0                |
@@ -99,6 +99,75 @@ summary(df$credit_score, exact_quantiles=TRUE)
 summary(df$loan_purpose, exact_quantiles=TRUE)
 summary(df$home_ownership, exact_quantiles=TRUE)
 ```
+
+```{r, eval=FALSE}
+df_ %>%
+  group_by(y, loan_purpose) %>%
+  summarise(n = n()) %>%
+  ggplot(aes(fill=y, y=n, x=loan_purpose)) + 
+  geom_bar(position="dodge", stat="identity") + 
+  coord_flip() +
+  scale_y_continuous(labels = scales::comma) +
+  theme_dark()
+```
+
+<img src="C:/Users/MatasV/OneDrive - SOCMIN/Darbalaukis/KTU/Projektas/KTU-DVDA-PROJECT/Grafikas_2.png" width="300"/>
+
+```{r, eval=FALSE}
+df_ %>%
+  filter(y == 1) %>%
+  group_by(loan_purpose) %>%
+  summarise(n = n()) %>%
+  arrange(desc(n))
+```
+
+<img src="C:/Users/MatasV/OneDrive - SOCMIN/Darbalaukis/KTU/Projektas/KTU-DVDA-PROJECT/3_g.png" width="500"/>
+
+```{r, eval=FALSE}
+library(plotly)
+df_ %>%
+  group_by(y, credit_score) %>%
+  summarise(n = n()) %>%
+  plot_ly(x = ~credit_score, y = ~n, name = ~y, type = "bar")
+```
+
+Iš grafiko galime pamatyti, kad trūksta nemažai duomenų, tačiau didesnė dalis žmonių turi gerą arba labai gerą kredito įvertinimą.
+
+<img src="C:/Users/MatasV/OneDrive - SOCMIN/Darbalaukis/KTU/Projektas/KTU-DVDA-PROJECT/4g.png" width="500"/>
+
+```{r, eval=FALSE}
+library(plotly)
+df_ %>%
+  group_by(y, term) %>%
+  summarise(n = n()) %>%
+  plot_ly(x = ~term, y = ~n, name = ~y, type = "bar")
+```
+
+Iš grafiko galime pamatyti, kad daugiausiai prašoma trumpalaikių paskolų ir jų negaunama.
+
+<img src="C:/Users/MatasV/OneDrive - SOCMIN/Darbalaukis/KTU/Projektas/KTU-DVDA-PROJECT/5g.png" width="500"/>
+
+```{r, eval=FALSE}
+library(plotly)
+df_ %>%
+  group_by(y, home_ownership) %>%
+  summarise(n = n()) %>%
+  plot_ly(x = ~home_ownership, y = ~n, name = ~y, type = "bar")
+```
+
+Iš grafiko galime pamatyti, didžioji dalis prašančiųjų paskolos neturi nuosavo būsto ir jį nuomojasi arba moka už jį paskolą.
+
+<img src="C:/Users/MatasV/OneDrive - SOCMIN/Darbalaukis/KTU/Projektas/KTU-DVDA-PROJECT/6g.png" width="500"/>
+
+```{r, eval=FALSE}
+library(plotly)
+df_ %>%
+  roup_by(y, loan_purpose) %>%
+  summarise(n = n()) %>%
+  plot_ly(x = ~loan_purpose, y = ~n, name = ~y, type = "bar")
+```
+
+<img src="C:/Users/MatasV/OneDrive - SOCMIN/Darbalaukis/KTU/Projektas/KTU-DVDA-PROJECT/7g.png" width="500"/>
 
 ## Modeliavimas
 
@@ -138,6 +207,8 @@ aml@leaderboard
 
 Gavome, kad modelio AUC rodiklis testiniams duomenims pasiekė **\~0.82.**
 
+<img src="C:/Users/MatasV/OneDrive - SOCMIN/Darbalaukis/KTU/Projektas/KTU-DVDA-PROJECT/Rplot.png" width="500"/>
+
 Išsaugojome rezultatus į **predictions_last**.**csv** failą, o modelį - **my_best_automlmode.\
 **
 
@@ -174,3 +245,13 @@ h2o.auc(h2o.performance(rf_model, newdata = test))
 
 h2o.saveModel(rf_model, "../4-model/", filename = "rf_model")
 ```
+
+Patikriname, kurie parametrai turi didžiausią svarbą apmokant šį modelį:
+
+```{r, eval=FALSE}
+var_imp <- h2o.varimp_plot(rf_model)
+```
+
+Pastebime, didžiausią įtaką modelio apmokymui daro parametrai: "credit_score", "yearly_income", "amount_current_loan" bei "term".
+
+<img src="C:/Users/MatasV/OneDrive - SOCMIN/Darbalaukis/KTU/Projektas/KTU-DVDA-PROJECT/8g.png" width="500"/>
