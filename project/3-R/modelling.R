@@ -1,11 +1,12 @@
+Sys.setenv(JAVA_HOME="C:/Program Files/Java/jdk-17")
+
 library(h2o)
 library(tidyverse)
 h2o.init(max_mem_size = "8g")
 
-
-df <- h2o.importFile("1-data/train_data.csv")
-test_data <- h2o.importFile("1-data/test_data.csv")
-df
+df <- h2o.importFile("C:/Users/MatasV/OneDrive - SOCMIN/Darbalaukis/KTU/Projektas/KTU-DVDA-PROJECT/project/1-data/train_data.csv")
+test_data <- h2o.importFile("C:/Users/MatasV/OneDrive - SOCMIN/Darbalaukis/KTU/Projektas/KTU-DVDA-PROJECT/project/1-data/test_data.csv")
+df 
 class(df)
 summary(df)
 
@@ -27,10 +28,10 @@ aml <- h2o.automl(x = x,
 
 aml@leaderboard
 
-#model <- aml@leader
+model <- aml@leader
 
 
-model <- h2o.getModel("GBM_1_AutoML_2_20231216_83909")
+#model <- h2o.getModel("GBM_1_AutoML_2_20231216_83909")
 
 h2o.performance(model, train = TRUE)
 h2o.performance(model, valid = TRUE)
@@ -50,4 +51,26 @@ predictions %>%
   as_tibble() %>%
   mutate(id = row_number(), y = p0) %>%
   select(id, y) %>%
-  write_csv("5-predictions/predictions1.csv")
+  write_csv("C:/Users/MatasV/OneDrive - SOCMIN/Darbalaukis/KTU/Projektas/KTU-DVDA-PROJECT/project/5-predictions/predictions_last.csv")
+
+
+### ID, Y
+
+h2o.saveModel(model, "../4-model/", filename = "my_best_automlmode")
+model <- h2o.loadModel("../4-model/my_best_automlmode")
+
+rf_model <- h2o.randomForest(x,
+                             y,
+                             training_frame = train,
+                             validation_frame = valid,
+                             ntrees = 50,
+                             max_depth = 20,
+                             stopping_metric = "AUC",
+                             seed = 123)
+rf_model
+h2o.auc(rf_model)
+h2o.auc(h2o.performance(rf_model, valid = TRUE))
+h2o.auc(h2o.performance(rf_model, newdata = test))
+
+
+h2o.saveModel(rf_model, "../4-model/", filename = "rf_model")
