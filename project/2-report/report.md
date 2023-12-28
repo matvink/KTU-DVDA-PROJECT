@@ -111,7 +111,7 @@ df_ %>%
   theme_dark()
 ```
 
-<img src="/KTU-DVDA-PROJECT/Grafikas_2.png" width="300"/>
+<img src="C:/Users/MatasV/OneDrive - SOCMIN/Darbalaukis/KTU/Projektas/KTU-DVDA-PROJECT/Grafikas_2.png" width="500"/>
 
 ```{r, eval=FALSE}
 df_ %>%
@@ -121,7 +121,7 @@ df_ %>%
   arrange(desc(n))
 ```
 
-<img src="C:/Users/MatasV/OneDrive - SOCMIN/Darbalaukis/KTU/Projektas/KTU-DVDA-PROJECT/3_g.png" width="500"/>
+<img src="C:/Users/MatasV/OneDrive - SOCMIN/Darbalaukis/KTU/Projektas/KTU-DVDA-PROJECT/3_g.png" width="300"/>
 
 ```{r, eval=FALSE}
 library(plotly)
