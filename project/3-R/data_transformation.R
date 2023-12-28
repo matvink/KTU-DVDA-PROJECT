@@ -3,7 +3,6 @@ library(tidyverse)
 library(visdat)
 library(dplyr)
 getwd()
-setwd("C://Users//ievak//OneDrive//Documents//Projektas//KTU-DVDA-PROJECT-main//project")
 
 file_path <- ("1-data/1-sample_data.csv")
 data <- read_csv(file_path)
