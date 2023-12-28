@@ -114,3 +114,42 @@ aml <- h2o.automl(x = x,
 
 aml@leaderboard
 ```
+
+Gavome, kad modelio AUC rodiklis testiniams duomenims pasiekė **\~0.82.**
+
+Išsaugojome rezultatus į **predictions_last**.**csv** failą, o modelį - **my_best_automlmode.\
+**
+
+```{r, eval=FALSE}
+predictions %>%
+  as_tibble() %>%
+  mutate(id = row_number(), y = p0) %>%
+  select(id, y) %>%
+  write_csv("../5-predictions/predictions_last.csv")
+
+
+### ID, Y
+
+h2o.saveModel(model, "../4-model/", filename = "my_best_automlmode")
+model <- h2o.loadModel("../4-model/my_best_automlmode")
+```
+
+Taip pat atlikome eksperimentą su random forest modeliu, kurio parametrus parinkome tokius `{r, eval=FALSE} ntrees = 50, max_depth = 20, stopping_metric = "AUC", seed = 123`
+
+```{r, eval=FALSE}
+rf_model <- h2o.randomForest(x,
+                             y,
+                             training_frame = train,
+                             validation_frame = valid,
+                             ntrees = 50,
+                             max_depth = 20,
+                             stopping_metric = "AUC",
+                             seed = 123)
+rf_model
+h2o.auc(rf_model)
+h2o.auc(h2o.performance(rf_model, valid = TRUE))
+h2o.auc(h2o.performance(rf_model, newdata = test))
+
+
+h2o.saveModel(rf_model, "../4-model/", filename = "rf_model")
+```
