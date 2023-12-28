@@ -1,13 +1,13 @@
-Sys.setenv(JAVA_HOME="C:/Program Files/Java/jdk-17")
 library(shiny)
+library(tidyverse)
 library(h2o)
-
 h2o.init()
 
 # Define UI for application that draws a histogram
 ui <- fluidPage(
   titlePanel("DVDA 2023 project. Matas ir Ieva",
-             actionButton("logout_button", "Logout", style = "color: red; font-weight: bold;")),
+             actionButton("logout_button", "Logout", style = "color: red; font-weight: bold;")
+  ),
   
   sidebarLayout(
     sidebarPanel(
@@ -153,6 +153,7 @@ server <- function(input, output) {
       mutate(id = row_number(), y = p0) %>%
       select(id, y)
   })
+  
   
   # Pridėti "Logout" mygtuko logiką
   observeEvent(input$logout_button, {
