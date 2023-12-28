@@ -121,7 +121,7 @@ df_ %>%
   arrange(desc(n))
 ```
 
-<img src="/3_g.png" width="300"/>
+<img src="/Images/3_g.png" width="300"/>
 
 ```{r, eval=FALSE}
 library(plotly)
@@ -133,7 +133,7 @@ df_ %>%
 
 Iš grafiko galime pamatyti, kad trūksta nemažai duomenų, tačiau didesnė dalis žmonių turi gerą arba labai gerą kredito įvertinimą.
 
-<img src="/4g.png" width="500"/>
+<img src="/Images/4g.png" width="500"/>
 
 ```{r, eval=FALSE}
 library(plotly)
@@ -145,7 +145,7 @@ df_ %>%
 
 Iš grafiko galime pamatyti, kad daugiausiai prašoma trumpalaikių paskolų ir jų negaunama.
 
-<img src="/5g.png" width="500"/>
+<img src="/Images/5g.png" width="500"/>
 
 ```{r, eval=FALSE}
 library(plotly)
@@ -157,7 +157,7 @@ df_ %>%
 
 Iš grafiko galime pamatyti, didžioji dalis prašančiųjų paskolos neturi nuosavo būsto ir jį nuomojasi arba moka už jį paskolą.
 
-<img src="/6g.png" width="500"/>
+<img src="/Images/6g.png" width="500"/>
 
 ```{r, eval=FALSE}
 library(plotly)
@@ -167,7 +167,7 @@ df_ %>%
   plot_ly(x = ~loan_purpose, y = ~n, name = ~y, type = "bar")
 ```
 
-<img src="/7g.png" width="500"/>
+<img src="/Images/7g.png" width="500"/>
 
 ## Modeliavimas
 
@@ -207,7 +207,7 @@ aml@leaderboard
 
 Gavome, kad modelio AUC rodiklis testiniams duomenims pasiekė **\~0.82.**
 
-<img src="/Rplot.png" width="500"/>
+<img src="/Images/Rplot.png" width="500"/>
 
 Išsaugojome rezultatus į **predictions_last**.**csv** failą, o modelį - **my_best_automlmode.\
 **
@@ -254,4 +254,4 @@ var_imp <- h2o.varimp_plot(rf_model)
 
 Pastebime, didžiausią įtaką modelio apmokymui daro parametrai: "credit_score", "yearly_income", "amount_current_loan" bei "term".
 
-<img src="/8g.png" width="500"/>
+<img src="/Images/8g.png" width="500"/>
