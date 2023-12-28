@@ -70,25 +70,24 @@ ui <- dashboardPage(
 server <- function(input, output) {
   
   path=getwd()
-  model <- h2o.loadModel("../../app/rf_model")
+  model <- h2o.loadModel("../4-model/my_best_automlmode")
   output$table <- renderTable({
     req(input$file)
-    table <- read_csv(input$file$datapath)
-    tableCount <<- table %>% tally()
-    tableData <<- table
+    table <- read_csv(input$file$datapath) %>%
+      group_by(credit_score) %>%
+      summarise(n = n())
     table
   })
   output$predictions <- renderDataTable({
     req(input$file)
     df_test <- h2o.importFile(input$file$datapath)
     p <- h2o.predict(model, df_test)
-    loanStatusFCount <<- as.data.frame(p) %>% tally(predict == 0)
-    loanStatusTCount <<- as.data.frame(p) %>% tally(predict == 1)
     p %>%
       as_tibble() %>%
       mutate(y = predict) %>%
       select(y) %>%
-      rownames_to_column("id")
+      rownames_to_column("id") %>%
+      head(20)
   })
   output$dataTable <- renderDataTable({
     req(input$file)
