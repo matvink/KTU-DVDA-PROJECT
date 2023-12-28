@@ -111,7 +111,7 @@ df_ %>%
   theme_dark()
 ```
 
-<img src="C:/Users/MatasV/OneDrive - SOCMIN/Darbalaukis/KTU/Projektas/KTU-DVDA-PROJECT/Grafikas_2.png" width="300"/>
+<img src="/KTU-DVDA-PROJECT/Grafikas_2.png" width="300"/>
 
 ```{r, eval=FALSE}
 df_ %>%
