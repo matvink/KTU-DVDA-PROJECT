@@ -72,7 +72,7 @@ h2o.auc(h2o.performance(rf_model, newdata = test))
 
 h2o.saveModel(rf_model, "../4-model/", filename = "rf_model")
 
-var_imp <- h2o.varimp_plot(rf_model)
+var_imp <- h2o.varimp_plot(model)
 
 
 

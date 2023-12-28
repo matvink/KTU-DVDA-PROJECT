@@ -1,154 +1,164 @@
 Sys.setenv(JAVA_HOME="C:/Program Files/Java/jdk-17")
-
-library(shinydashboard)
 library(shiny)
-library(shinyBS)
 library(h2o)
-library(tidyverse)
-library(shinyjs)
-library(highcharter)
-library(plotly)
-library(DT)
 
-h2o.init(max_mem_size = "8g")
+h2o.init()
 
-ui <- dashboardPage(
-  dashboardHeader(title = "Banko paskolos aplikacija 2023"),
-  dashboardSidebar(fileInput("file", "Įkelti csv failą"),
-                   sidebarMenu(
-                     menuItem("Apžvalga", tabName = "dashboard", icon = icon("dashboard", lib = "glyphicon")),
-                     menuItem("Duomenys", tabName = "data", icon = icon("table")),
-                     menuItem("Grafikai", tabName = "charts", icon = icon("stats", lib = "glyphicon")),
-                     menuItem("Spėjimai", tabName = "predictions", icon = icon("scale", lib = "glyphicon")),
-                     menuItem("Apie", tabName = "about", icon = icon("info-circle")))),
-  dashboardBody(
-    tags$head(
-      tags$link(rel = "stylesheet", type = "text/css", href = "custom.css")
+# Define UI for application that draws a histogram
+ui <- fluidPage(
+  titlePanel("DVDA 2023 project. Matas ir Ieva",
+             actionButton("logout_button", "Logout", style = "color: red; font-weight: bold;")),
+  
+  sidebarLayout(
+    sidebarPanel(
+      fileInput("file", "Upload CSV file"),
+      
+      numericInput("amount_current_loan", "Current loan amount", value = 0, min = 0, max = 2000000, step = 500),
+      numericInput("yearly_income", "Yearly income", value = 0, min = 0, max = 2000000, step = 500),
+      sliderInput("bankruptcies", "Bankruptcies", value = 0, min = 0, max = 10),
+      numericInput("monthly_debt", "Monthly debt", value = 0, min = 0, max = 1000000, step = 500),
+      numericInput("years_credit_history", "Years credit history", value = 0, min = 0, max = 100, step = 1),
+      numericInput("months_since_last_delinquent", "Months since last delinquent", value = 0, min = 0, max = 500, step = 1),
+      numericInput("open_accounts", "Open accounts", value = 0, min = 0, max = 70, step = 1),
+      sliderInput("credit_problems", "Credit problems", value = 0, min = 0, max = 100),
+      numericInput("credit_balance", "Credit balance", value = 0, min = 0, max = 5000000, step = 500),
+      numericInput("max_open_credit", "Max open credit", value = 0, min = 0, max = 5000000, step = 500),
+      numericInput("years_current_job", "Years in current job", value = 1, min = 1, max = 20, step = 1),
+      selectInput("loan_purpose", "Loan purpose", c("debt_consolidation", "other", "home_improvements", "business_loan", "buy_a_car", "medical_bills"), "good"),
+      selectInput("home_ownership", "Home ownership", c("mortgage", "rent", "own"), "good"),
+      selectInput("credit_score", "Credit score", c("good", "very_good", "fair"), "good"),
+      selectInput("term", "Loan term", c("short", "long"), "good"),
+      
+      actionButton("calculate_button", "Calculate"),
+      br(),
+      br(),
+      a("Logout", href = "javascript:window.location.reload(true);", style = "color: red; font-weight: bold;")
     ),
-    tabItems(
-      tabItem("dashboard",
-              fluidRow(
-                valueBoxOutput("loansBox"),
-                valueBoxOutput("loansStatusTBox"),
-                valueBoxOutput("loansStatusFBox")
-              ),
-      ),
-      tabItem("data",
-              tabPanel("Bar",
-                       dataTableOutput("dataTable")
-              )
-      ),
-      tabItem("charts",
-              fluidRow(
-                box(width=6,title = 'Paskolos trukmės stulpelinė diagrama',solidHeader = T,status = 'primary',
-                    hr(),
-                    plotOutput('termPlot'),
-                    hr(),
-                ),
-                box(width=6,title = 'Kredito įvertinimo stulpelinė diagrama',solidHeader = T,status = 'primary',
-                    hr(),
-                    plotOutput('creditScorePlot'),
-                    hr(),
-                ),
-                box(width=6,title = 'Kredito įvertinimo stulpelinė diagrama',solidHeader = T,status = 'primary',
-                    hr(),
-                    plotOutput('loanAmountPlot'),
-                    hr(),
-                ),
-              )
-      ),
-      tabItem("predictions",
-              dataTableOutput("predictions")
-      ),
-      tabItem("about",
-              h1(tags$b("DVDA projektas")),
-              
+    
+    mainPanel(
+      tabsetPanel(
+        tabPanel("Input Data", tableOutput("inputTable")),
+        tabPanel("Prediction Results", dataTableOutput("predictionTable")),
+        tabPanel("Uploaded File", dataTableOutput("fileTable")),
+        tabPanel("Additional Information",
+                 fluidRow(
+                   column(4,
+                          h3("Additional Information"),
+                          textInput("AD", "Feedback", value = "")
+                   )
+                 )
+        ),
+        tabPanel("Model AUC result",
+                 fluidRow(
+                   column(4,
+                          h3("Model AUC result - 0.82"),
+                   )
+                 )     
+        )
       )
     )
-  )
+  ),
+  tags$style(HTML("
+    #calculate_button {
+      background-color: #4CAF50; /* Žalia spalva */
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 16px;
+      margin: 4px 2px;
+      cursor: pointer;
+    }
+
+    .numericInput, .sliderInput, .selectInput, .file-input {
+      background-color: #f0f0f0; /* Šviesiai pilka spalva */
+      border: 1px solid #ccc;
+    }
+
+    .additional-info-column {
+      background-color: #d9f7be; /* Šviesiai žalia spalva */
+    }
+  "))
 )
+
+# Define server logic
 server <- function(input, output) {
-  
-  path=getwd()
   model <- h2o.loadModel("../4-model/my_best_automlmode")
-  output$table <- renderTable({
-    req(input$file)
-    table <- read_csv(input$file$datapath) %>%
-      group_by(credit_score) %>%
-      summarise(n = n())
-    table
+  
+  input_data <- eventReactive(input$calculate_button, {
+    data <- data.frame(
+      amount_current_loan = input$amount_current_loan,
+      yearly_income = input$yearly_income,
+      bankruptcies = input$bankruptcies,
+      monthly_debt = input$monthly_debt,
+      years_credit_history = input$years_credit_history,
+      months_since_last_delinquent = input$months_since_last_delinquent,
+      open_accounts = input$open_accounts,
+      credit_problems = input$credit_problems,
+      credit_balance = input$credit_balance,
+      max_open_credit = input$max_open_credit,
+      years_current_job = input$years_current_job,
+      loan_purpose = factor(input$loan_purpose),
+      home_ownership = factor(input$home_ownership),
+      credit_score = factor(input$credit_score),
+      term = factor(input$term),
+      AD = input$AD  # Pridėtas naujas stulpelis "Feedback"
+    )
+    data.frame(
+      column = names(data),
+      value = unlist(data)
+    )
   })
-  output$predictions <- renderDataTable({
+  
+  output$inputTable <- renderTable({
+    input_data()
+  })
+  
+  prediction_data <- eventReactive(input$calculate_button, {
+    inputData <- data.frame(
+      amount_current_loan = input$amount_current_loan,
+      yearly_income = input$yearly_income,
+      bankruptcies = input$bankruptcies,
+      monthly_debt = input$monthly_debt,
+      years_credit_history = input$years_credit_history,
+      months_since_last_delinquent = input$months_since_last_delinquent,
+      open_accounts = input$open_accounts,
+      credit_problems = input$credit_problems,
+      credit_balance = input$credit_balance,
+      max_open_credit = input$max_open_credit,
+      years_current_job = input$years_current_job,
+      loan_purpose = factor(input$loan_purpose),
+      home_ownership = factor(input$home_ownership),
+      credit_score = factor(input$credit_score),
+      term = factor(input$term),
+      AD = input$AD  # Pridėtas naujas stulpelis "Feedback"
+    )
+    
+    predictions <- h2o.predict(model, as.h2o(inputData))
+    as.data.frame(predictions)
+  })
+  
+  output$predictionTable <- renderDataTable({
+    prediction_data()
+  })
+  
+  output$fileTable <- renderDataTable({
     req(input$file)
-    df_test <- h2o.importFile(input$file$datapath)
-    p <- h2o.predict(model, df_test)
-    p %>%
+    test_data <- h2o.importFile(input$file$datapath)
+    predictions <- h2o.predict(model, test_data)
+    predictions %>%
       as_tibble() %>%
-      mutate(y = predict) %>%
-      select(y) %>%
-      rownames_to_column("id") %>%
-      head(20)
+      mutate(id = row_number(), y = p0) %>%
+      select(id, y)
   })
-  output$dataTable <- renderDataTable({
-    req(input$file)
-    #tableData
-    datatable(
-      tableData,
-      options = list(
-        scrollX = TRUE
-      )        
-    )
-  })
-  output$loansBox <- renderValueBox({
-    req(input$file)
-    valueBox(
-      tableCount,
-      "Paskolos prašymai", icon = icon("piggy-bank", lib = "glyphicon"),
-      color = "blue"
-    )
-  })
-  output$loansStatusTBox <- renderValueBox({
-    req(input$file)
-    valueBox(
-      loanStatusTCount , "Patvirtinti", icon = icon("ok", lib = "glyphicon"),
-      color = "red"
-    )
-  })
-  output$loansStatusFBox <- renderValueBox({
-    req(input$file)
-    valueBox(
-      loanStatusFCount,
-      "Atmesti",
-      icon = icon("remove", lib = "glyphicon"),
-      color = "yellow"
-    )
-  })
-  output$termPlot <- renderPlot({
-    req(input$file)
-    ggplot(tableData, aes(x=as.factor(term), fill=as.factor(term) )) + 
-      geom_bar(stat='count', fill="steelblue") +
-      xlab('Paskolos trukmė')+
-      ylab('Dažnis')+
-      coord_flip()+
-      theme_minimal()
-  })
-  output$creditScorePlot <- renderPlot({
-    req(input$file)
-    ggplot(tableData, aes(x=as.factor(credit_score), fill=as.factor(credit_score) )) + 
-      geom_bar(stat='count', fill="steelblue") +
-      scale_fill_brewer(palette = "Set1") +
-      xlab('Kredito įvertinimas')+
-      ylab('Dažnis')+
-      coord_flip()+
-      theme_minimal()
-  })
-  output$loanAmountPlot <- renderPlot({
-    req(input$file)
-    ggplot(tableData, aes(x=years_credit_history)) + 
-      xlab('Kredito istorija(metai)')+
-      ylab('Dažnis')+
-      geom_histogram(fill="steelblue") +
-      theme_minimal()
+  
+  # Pridėti "Logout" mygtuko logiką
+  observeEvent(input$logout_button, {
+    session$reload()
   })
 }
-shinyApp(ui, server)
+
+# Run the application 
+shinyApp(ui = ui, server = server)
